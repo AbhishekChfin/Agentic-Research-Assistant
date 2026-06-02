@@ -1,0 +1,39 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local documents and generated retrieval artifacts
+data/
+
+# Local learning notes: publish only README and required runtime prompts
+*.md
+!README.md
+!app/prompts/planner.md
+!app/prompts/summarizer.md
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/
+
+# Local runtime artifacts
+.cache/
+*.log
+*.faiss
+*.index
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
