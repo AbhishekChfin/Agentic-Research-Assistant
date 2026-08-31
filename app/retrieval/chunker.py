@@ -465,7 +465,7 @@ class EmbeddingSemanticChunker(BaseChunker):
     def __init__(
         self,
         chunk_size: int = 1000,
-        similarity_threshold: float = 0.5,
+        similarity_threshold: float = 0.8,
         model_name: str = "sentence-transformers/all-MiniLM-L12-v2",
     ):
         if chunk_size <= 0:
@@ -610,3 +610,6 @@ def perform_embedding_semantic_chunking(
         chunk_size=chunk_size,
         similarity_threshold=similarity_threshold,
     ).chunk(records)
+
+
+    

@@ -1,6 +1,7 @@
 from app.agents.planner import PlannerAgent
 from app.agents.researcher import ResearcherAgent
-from app.core.schemas import EvidenceItem, ResearchPlan
+from app.core.schemas import EvidenceItem, EvaluationResult, ResearchPlan
+from app.evaluation.judge import JudgeAgent
 from app.graph.state import ResearchState
 from app.synthesis.summarizer import synthesize
 
@@ -18,7 +19,6 @@ def planner_node(state: ResearchState) -> ResearchState:
 
 def researcher_node(state: ResearchState) -> ResearchState:
     plan = ResearchPlan.model_validate(state["plan"])
-
     researcher = ResearcherAgent()
     findings = researcher.run(plan)
 
@@ -29,11 +29,31 @@ def researcher_node(state: ResearchState) -> ResearchState:
     }
 
 
+def judge_node(state: ResearchState) -> ResearchState:
+    plan = ResearchPlan.model_validate(state["plan"])
+    findings = [
+        EvidenceItem.model_validate(item)
+        for item in state.get("evidence", [])
+    ]
+
+    judge = JudgeAgent()
+    evaluation = judge.evaluate_response(
+        query=state["query"],
+        plan=plan,
+        findings=findings,
+    )
+
+    return {
+        "evaluation": evaluation.model_dump(),
+        "status": "judged",
+    }
+
+
 def summarizer_node(state: ResearchState) -> ResearchState:
     plan = ResearchPlan.model_validate(state["plan"])
     findings = [
         EvidenceItem.model_validate(item)
-        for item in state["evidence"]
+        for item in state.get("evidence", [])
     ]
 
     final_response = synthesize(plan, findings)

@@ -35,4 +35,11 @@ class MemoryEntry(BaseModel):
 
 
 class EvaluationResult(BaseModel):
-    pass
+    passed: bool
+    score: float
+    summary: str
+    issues: List[str] = []
+    missing_evidence: List[str] = []
+    recommended_action: str
+    confidence: float
+    notes: Optional[str] = None

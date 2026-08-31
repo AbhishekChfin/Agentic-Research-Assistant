@@ -43,7 +43,7 @@ class PlannerAgent:
         return content[start : end + 1]
 
 
-if __name__ == "__main__":
-    planner = PlannerAgent()
-    plan = planner.create_plan("Compare LangGraph, AutoGen, and CrewAI for production multi-agent workflows.")
-    print(plan.model_dump_json(indent=2))
+# if __name__ == "__main__":
+#     planner = PlannerAgent()
+#     plan = planner.create_plan("Compare LangGraph, AutoGen, and CrewAI for production multi-agent workflows.")
+#     print(plan.model_dump_json(indent=2))

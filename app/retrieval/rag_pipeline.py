@@ -40,7 +40,7 @@ class RAGSearch:
     def __init__(
         self,
         embeddings_path: Path = EMBEDDINGS_PATH,
-        top_k: int = 3,
+        top_k: int = 10,
     ):
         if top_k <= 0:
             raise ValueError("top_k must be greater than 0")
@@ -216,3 +216,5 @@ class PDFExtractor:
             text = text.replace(bad, good)
 
         return text
+
+

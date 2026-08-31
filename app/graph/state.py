@@ -16,6 +16,8 @@ class ResearchState(TypedDict, total=False):
     citations: list[dict[str, Any]]
     uncertainties: list[str]
     evaluation: dict[str, Any]
+    retry_count: int
+    next_action: str
     memory_entry: dict[str, Any]
     status: str
     errors: list[dict[str, Any]]

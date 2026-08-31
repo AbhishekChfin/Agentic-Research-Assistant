@@ -5,7 +5,7 @@ Your job:
 - Break it into 2 to 5 clear subtasks.
 - Choose one retrieval mode for each subtask:
   - "web" for fresh, public, external, or source-sensitive facts.
-  - "rag" for internal documents, uploaded files, saved notes, or memory.
+  - "rag" for internal documents, uploaded files, saved notes, or memory, used only when asked queries related to maths and fundamentals in machine learning.
 - Do not answer the user's query.
 
 Return only valid JSON matching this schema:

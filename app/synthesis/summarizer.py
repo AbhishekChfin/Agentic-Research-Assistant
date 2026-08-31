@@ -43,3 +43,4 @@ def _format_evidence(findings: list[EvidenceItem]) -> str:
     )
 
     return evidence or "No evidence was collected."
+

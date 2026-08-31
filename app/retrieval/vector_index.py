@@ -71,17 +71,17 @@ class VectorIndex:
         if top_k <= 0:
             raise ValueError("top_k must be greater than 0")
         
-        query = np.asarray([query_embedding], dtype="float32")
+        query_vec = np.asarray([query_embedding], dtype="float32") # query array
 
-        if query.shape[1] != self.emb_dim:
+        if query_vec.shape[1] != self.emb_dim:
             raise ValueError(
-                f"Expected query dim {self.emb_dim}, got {query.shape[1]}"
+                f"Expected query_vec dim {self.emb_dim}, got {query_vec.shape[1]}"
             )
         
-        faiss.normalize_L2(query)
+        faiss.normalize_L2(query_vec)
 
         scores, positions = self.index.search(
-            query, 
+            query_vec, 
             min(top_k, len(self.records)),
         )
 
@@ -93,6 +93,6 @@ class VectorIndex:
         
         return results
     
-    def search(self, query: str, top_k: int = 10) -> list[dict[str, Any]]:
-        query_embedding = self.embedder.embed_query(query)
+    def search(self, query_vec: str, top_k: int = 10) -> list[dict[str, Any]]:
+        query_embedding = self.embedder.embed_query(query_vec)
         return self.search_by_vector(query_embedding, top_k=top_k)
