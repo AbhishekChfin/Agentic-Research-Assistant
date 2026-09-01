@@ -8,7 +8,7 @@ from app.retrieval.chunker import (
     SemanticChunker,
     SentenceChunker,
 )
-from app.retrieval.rag_pipeline import PDFExtractor
+from app.retrieval.data_extractor import PDFExtractor
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]

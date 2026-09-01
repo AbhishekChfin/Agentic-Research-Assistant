@@ -1,5 +1,5 @@
 from app.core.schemas import EvidenceItem, FinalResponse, ResearchPlan, Subtask
-from app.synthesis.summarizer import synthesize
+from app.agents.summarizer import synthesize
 from app.models.answer_llm import get_answer_llm
 
 # class FakeAnswerLLM:

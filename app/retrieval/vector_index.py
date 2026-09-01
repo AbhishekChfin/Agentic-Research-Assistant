@@ -56,7 +56,7 @@ class VectorIndex:
 
         matrix = np.asarray(vectors, dtype="float32")
         faiss.normalize_L2(matrix)
-        self.index.add(matrix)
+        self.index.add(matrix) # type: ignore
         self.records.extend(records)
     
     def search_by_vector(
@@ -83,7 +83,7 @@ class VectorIndex:
         scores, positions = self.index.search(
             query_vec, 
             min(top_k, len(self.records)),
-        )
+        ) # type: ignore
 
         results = []
         for score, position in zip(scores[0], positions[0]):

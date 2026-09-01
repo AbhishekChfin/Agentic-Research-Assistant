@@ -45,7 +45,7 @@ def _result_to_evidence(result: dict[str, Any]) -> EvidenceItem:
         claim=result.get("content") or "No content returned.",
         source_title=result.get("title") or "Untitled web source",
         source_url=result.get("url") or "",
-        confidence=result.get("score"),
+        confidence=result.get("score"), # type: ignore
     )
 
 # No need to normalize score in tavily, its already on a scale of 1
@@ -55,12 +55,12 @@ def _result_to_evidence(result: dict[str, Any]) -> EvidenceItem:
 
 #     return 0.7
 
-# if __name__=="__main__":
-#     # Example usage
-#     query = "Recent research papers on agent memory systems"
-#     results = web_search(query)
-#     for item in results:
-#         print(f"Claim: {item.claim}")
-#         print(f"Source: {item.source_title} ({item.source_url})")
-#         print(f"Confidence: {item.confidence}")
-#         print("-" * 40)
+if __name__=="__main__":
+    # Example usage
+    query = "Recent research papers on agent memory systems"
+    results = web_search(query)
+    for item in results:
+        print(f"Claim: {item.claim}")
+        # print(f"Source: {item.source_title} ({item.source_url})")
+        # print(f"Confidence: {item.confidence}")
+        print("-" * 40)

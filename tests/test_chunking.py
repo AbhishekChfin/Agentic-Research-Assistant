@@ -20,7 +20,7 @@ from app.retrieval.chunker import (
     perform_sentence_chunking,
     perform_token_chunking,
 )
-from app.retrieval.rag_pipeline import PDFExtractor
+from app.retrieval.data_extractor import PDFExtractor
 
 
 SAMPLE_PDF_PATH = Path(__file__).resolve().parent.parent.parent/'data'/'docs'/'financial_machine_learning.pdf'

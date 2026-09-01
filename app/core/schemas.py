@@ -20,6 +20,7 @@ class EvidenceItem(BaseModel):
     source_url: str
     confidence: float
 
+
 class FinalResponse(BaseModel):
     plan: ResearchPlan
     findings: List[EvidenceItem]
@@ -40,6 +41,6 @@ class EvaluationResult(BaseModel):
     summary: str
     issues: List[str] = []
     missing_evidence: List[str] = []
-    recommended_action: str
+    # recommended_action: str
     confidence: float
     notes: Optional[str] = None

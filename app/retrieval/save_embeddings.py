@@ -32,9 +32,9 @@ def embed_chunks_file(
     save_embeddings_to_jsonl(embedded_chunks, output_path)
     return len(embedded_chunks)
 
-if __name__ == "__main__":
-    input_file = PROJECT_ROOT / "data/processed/chunks/financial_machine_learning_sentence_700_overlap_120.jsonl"
-    output_file = PROJECT_ROOT / "data/processed/embeddings/financial_machine_learning_sentence_700_overlap_120_embedded.jsonl"
+# if __name__ == "__main__":
+#     input_file = PROJECT_ROOT / "data/processed/chunks/financial_machine_learning_sentence_700_overlap_120.jsonl"
+#     output_file = PROJECT_ROOT / "data/processed/embeddings/financial_machine_learning_sentence_700_overlap_120_embedded.jsonl"
     
-    count = embed_chunks_file(input_file, output_file)
-    print(f"Embedded and saved {count} chunks to {output_file}")
+#     count = embed_chunks_file(input_file, output_file)
+#     print(f"Embedded and saved {count} chunks to {output_file}")

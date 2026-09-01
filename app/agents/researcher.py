@@ -1,6 +1,6 @@
 from app.core.schemas import EvidenceItem, ResearchPlan
-from app.retrieval.rag_pipeline import RAGSearch
-from app.retrieval.web_search import web_search
+from app.tools.db_search import RAGSearch
+from app.tools.web_search import web_search
 
 
 class ResearcherAgent:

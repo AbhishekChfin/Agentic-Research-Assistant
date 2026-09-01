@@ -11,8 +11,8 @@ def build_workflow():
 
     graph.add_node("planner", planner_node)
     graph.add_node("researcher", researcher_node)
-    graph.add_node("judge", judge_node)
     graph.add_node("summarizer", summarizer_node)
+    graph.add_node("judge", judge_node)
 
     add_workflow_edges(graph)
 
