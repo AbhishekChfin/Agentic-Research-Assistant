@@ -7,6 +7,9 @@ from app.agents.summarizer import SummariserAgent
 
 
 def planner_node(state: ResearchState) -> ResearchState:
+    """
+    Using planner agent to create plan
+    """
     planner = PlannerAgent()
     plan = planner.create_plan(state["query"]) # type: ignore
 
@@ -18,6 +21,13 @@ def planner_node(state: ResearchState) -> ResearchState:
 
 
 def researcher_node(state: ResearchState) -> ResearchState:
+    """
+    Excuting research using the plan stored in workflow state
+    Args:
+        Updated state 
+    Return:
+        Updated graph state using collected evidence and completed subtasks
+    """
     plan = ResearchPlan.model_validate(state["plan"]) # type: ignore
     researcher = ResearcherAgent()
     findings = researcher.run(plan)
@@ -30,6 +40,17 @@ def researcher_node(state: ResearchState) -> ResearchState:
 
 
 def judge_node(state: ResearchState) -> ResearchState:
+    """
+    Evaluating the final answer against the research plan and evidence.
+    Args:
+        state: Current workflow state containing the query, plan,
+            evidence, and final answer.
+
+    Returns:
+        Updated workflow state containing the evaluation result,
+        updated retry count, and judged status.
+    """
+
     plan = ResearchPlan.model_validate(state["plan"]) # type: ignore
     findings = [
         EvidenceItem.model_validate(item)
@@ -58,6 +79,9 @@ def judge_node(state: ResearchState) -> ResearchState:
 
 
 def summarizer_node(state: ResearchState) -> ResearchState:
+    """
+    Generate a final response by synthesizing the research plan and collected evidence.
+    """
     plan = ResearchPlan.model_validate(state["plan"]) # type: ignore
     findings = [
         EvidenceItem.model_validate(item)
