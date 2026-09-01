@@ -7,6 +7,14 @@ from app.graph.state import ResearchState
 
 
 def build_workflow():
+    """Build the research graph.
+
+    Args:
+        None.
+
+    Returns:
+        Compiled LangGraph workflow configured with planner, researcher, summarizer, and judge nodes.
+    """
     graph = StateGraph(ResearchState)
 
     graph.add_node("planner", planner_node)
@@ -20,6 +28,14 @@ def build_workflow():
 
 
 def run_workflow(query: str) -> FinalResponse:
+    """Run the end-to-end research workflow for a user query.
+
+    Args:
+        query (str): The user query to research.
+
+    Returns:
+        FinalResponse: Final synthesized answer converted from the workflow state.
+    """
     workflow = build_workflow()
 
     final_state = workflow.invoke(
