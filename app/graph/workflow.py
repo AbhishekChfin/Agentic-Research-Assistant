@@ -8,35 +8,32 @@ from app.core.schemas import FinalResponse
 
 from app.graph.edges import add_workflow_edges
 
-from app.agents import *
+from app.core.dependencies import get_dependencies
 
 from app.graph.nodes import planner_node, researcher_node, summarizer_node, judge_node
  
 
 @lru_cache
 def get_workflow():
-    planner = PlannerAgent()
-    researcher = ResearcherAgent()
-    summarizer = SummariserAgent()
-    judge = JudgeAgent()
+    deps = get_dependencies()
 
     graph = StateGraph(ResearchState)
 
     graph.add_node(
         "planner",
-        partial(planner_node, planner=planner),
+        partial(planner_node, planner=deps.planner),
     )
     graph.add_node(
         "researcher",
-        partial(researcher_node, researcher=researcher),
+        partial(researcher_node, researcher=deps.researcher),
     )
     graph.add_node(
         "summarizer",
-        partial(summarizer_node, summarizer=summarizer),
+        partial(summarizer_node, summarizer=deps.summarizer),
     )
     graph.add_node(
         "judge",
-        partial(judge_node, judge=judge),
+        partial(judge_node, judge=deps.judge),
     )
 
     add_workflow_edges(graph)
