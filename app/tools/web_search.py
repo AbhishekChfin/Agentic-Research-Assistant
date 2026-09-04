@@ -4,13 +4,13 @@ from typing import Any
 import requests
 from dotenv import load_dotenv
 
-from app.core.schemas import EvidenceItem
+from app.core.schemas import EvidenceItem, Evidence
 
 
 TAVILY_SEARCH_URL = "https://api.tavily.com/search"
 
 
-def web_search(query: str, max_results: int = 3) -> list[EvidenceItem]:
+def web_search(query: str, max_results: int = 3) -> list[Evidence]:
     load_dotenv()
 
     api_key = os.getenv("TAVILY_API_KEY")
@@ -40,8 +40,8 @@ def web_search(query: str, max_results: int = 3) -> list[EvidenceItem]:
     return [_result_to_evidence(result) for result in results]
 
 
-def _result_to_evidence(result: dict[str, Any]) -> EvidenceItem:
-    return EvidenceItem(
+def _result_to_evidence(result: dict[str, Any]) -> Evidence:
+    return Evidence(
         claim=result.get("content") or "No content returned.",
         source_title=result.get("title") or "Untitled web source",
         source_url=result.get("url") or "",
@@ -55,12 +55,12 @@ def _result_to_evidence(result: dict[str, Any]) -> EvidenceItem:
 
 #     return 0.7
 
-if __name__=="__main__":
-    # Example usage
-    query = "Recent research papers on agent memory systems"
-    results = web_search(query)
-    for item in results:
-        print(f"Claim: {item.claim}")
-        # print(f"Source: {item.source_title} ({item.source_url})")
-        # print(f"Confidence: {item.confidence}")
-        print("-" * 40)
+# if __name__=="__main__":
+#     # Example usage
+#     query = "Recent research papers on agent memory systems"
+#     results = web_search(query)
+#     for item in results:
+#         print(f"Claim: {item.claim}")
+#         # print(f"Source: {item.source_title} ({item.source_url})")
+#         # print(f"Confidence: {item.confidence}")
+#         print("-" * 40)

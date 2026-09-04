@@ -33,5 +33,4 @@ class PlannerAgent:
 # if __name__ == "__main__":
 #     planner = PlannerAgent()
 #     plan = planner.create_plan("what are class objects in python.")
-#     print(plan)
-#     print(plan.model_dump().subtasks[0].task)
+#     plan

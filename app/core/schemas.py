@@ -14,11 +14,14 @@ class ResearchPlan(BaseModel):
     subtasks: List[Subtask]
 
 
-class EvidenceItem(BaseModel):
+class Evidence(BaseModel):
     claim: str
     source_title: str
     source_url: str
     confidence: float
+
+class EvidenceItem(Evidence):
+    subtask_id: str
 
 
 class FinalResponse(BaseModel):
