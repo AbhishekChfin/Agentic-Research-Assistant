@@ -1,29 +1,45 @@
+# app/graph/workflow.py
+from functools import lru_cache, partial
 from langgraph.graph import StateGraph
 
-from app.core.schemas import FinalResponse
-from app.graph.edges import add_workflow_edges
-from app.graph.nodes import judge_node, planner_node, researcher_node, summarizer_node
 from app.graph.state import ResearchState
 
+from app.core.schemas import FinalResponse
 
-def build_workflow():
-    """Build the research graph.
+from app.graph.edges import add_workflow_edges
 
-    Args:
-        None.
+from app.agents import *
 
-    Returns:
-        Compiled LangGraph workflow configured with planner, researcher, summarizer, and judge nodes.
-    """
+from app.graph.nodes import planner_node, researcher_node, summarizer_node, judge_node
+ 
+
+@lru_cache
+def get_workflow():
+    planner = PlannerAgent()
+    researcher = ResearcherAgent()
+    summarizer = SummariserAgent()
+    judge = JudgeAgent()
+
     graph = StateGraph(ResearchState)
 
-    graph.add_node("planner", planner_node)
-    graph.add_node("researcher", researcher_node)
-    graph.add_node("summarizer", summarizer_node)
-    graph.add_node("judge", judge_node)
+    graph.add_node(
+        "planner",
+        partial(planner_node, planner=planner),
+    )
+    graph.add_node(
+        "researcher",
+        partial(researcher_node, researcher=researcher),
+    )
+    graph.add_node(
+        "summarizer",
+        partial(summarizer_node, summarizer=summarizer),
+    )
+    graph.add_node(
+        "judge",
+        partial(judge_node, judge=judge),
+    )
 
     add_workflow_edges(graph)
-
     return graph.compile()
 
 
@@ -36,9 +52,8 @@ def run_workflow(query: str) -> FinalResponse:
     Returns:
         FinalResponse: Final synthesized answer converted from the workflow state.
     """
-    workflow = build_workflow()
 
-    final_state = workflow.invoke(
+    final_state = get_workflow().invoke(
         {
             "query": query,
             "status": "started",

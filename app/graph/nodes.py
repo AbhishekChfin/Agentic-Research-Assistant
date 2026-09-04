@@ -1,16 +1,13 @@
-from app.agents.planner import PlannerAgent
-from app.agents.researcher import ResearcherAgent
+from app.agents import JudgeAgent, PlannerAgent, ResearcherAgent, SummariserAgent
 from app.core.schemas import EvidenceItem, EvaluationResult, ResearchPlan
-from app.agents.judge import JudgeAgent
 from app.graph.state import ResearchState
-from app.agents.summarizer import SummariserAgent
 
 
-def planner_node(state: ResearchState) -> ResearchState:
+
+def planner_node(state: ResearchState, planner: PlannerAgent) -> ResearchState:
     """
     Using planner agent to create plan
     """
-    planner = PlannerAgent()
     plan = planner.create_plan(state["query"]) # type: ignore
 
     return {
@@ -20,7 +17,7 @@ def planner_node(state: ResearchState) -> ResearchState:
     }
 
 
-def researcher_node(state: ResearchState) -> ResearchState:
+def researcher_node(state: ResearchState, researcher: ResearcherAgent) -> ResearchState:
     """
     Excuting research using the plan stored in workflow state
     Args:
@@ -29,7 +26,6 @@ def researcher_node(state: ResearchState) -> ResearchState:
         Updated graph state using collected evidence and completed subtasks
     """
     plan = ResearchPlan.model_validate(state["plan"]) # type: ignore
-    researcher = ResearcherAgent()
     findings = researcher.run(plan)
 
     return {
@@ -39,7 +35,7 @@ def researcher_node(state: ResearchState) -> ResearchState:
     }
 
 
-def judge_node(state: ResearchState) -> ResearchState:
+def judge_node(state: ResearchState, judge: JudgeAgent) -> ResearchState:
     """
     Evaluating the final answer against the research plan and evidence.
     Args:
@@ -58,7 +54,7 @@ def judge_node(state: ResearchState) -> ResearchState:
     ]
     final_answer = state.get("final_response", "")
 
-    judge = JudgeAgent()
+    
     evaluation = judge.evaluate_final_answer(
         query=state["query"], # type: ignore
         answer=final_answer,
@@ -78,7 +74,7 @@ def judge_node(state: ResearchState) -> ResearchState:
     }
 
 
-def summarizer_node(state: ResearchState) -> ResearchState:
+def summarizer_node(state: ResearchState, summarizer: SummariserAgent) -> ResearchState:
     """
     Generate a final response by synthesizing the research plan and collected evidence.
     """
@@ -87,8 +83,7 @@ def summarizer_node(state: ResearchState) -> ResearchState:
         EvidenceItem.model_validate(item)
         for item in state.get("evidence", [])
     ]
-    summarise = SummariserAgent()
-    final_response = summarise.synthesize(plan, findings)
+    final_response = summarizer.synthesize(plan, findings)
 
     return {
         "synthesis": final_response.model_dump(),
