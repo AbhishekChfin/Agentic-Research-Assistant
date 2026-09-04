@@ -14,7 +14,6 @@ def decide_next_step(state: dict) -> str:
     """
     evaluation = state.get("evaluation") or {}
     retry_count = state.get("retry_count", 0)
-    recommended_action = evaluation.get("recommended_action", "stop_and_summarize")
 
     if evaluation.get("passed") is True:
         return "end"
@@ -22,8 +21,9 @@ def decide_next_step(state: dict) -> str:
     if retry_count >= 2:
         return "end"
 
-    if recommended_action == "replan":
+    if evaluation.get("passed") is False:
         return "planner"
+        
 
     return "end"
 

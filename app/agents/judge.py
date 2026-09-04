@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 from pathlib import Path
 
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -6,6 +7,11 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from app.core.schemas import EvidenceItem, EvaluationResult, ResearchPlan
 
 PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "rubrics.md"
+
+
+@lru_cache(maxsize=128)
+def _load_prompt(path: str) -> str:
+    return Path(path).read_text(encoding="utf-8")
 
 
 class JudgeAgent:
@@ -39,7 +45,7 @@ class JudgeAgent:
         plan: ResearchPlan,
         findings: list[EvidenceItem],
     ) -> str:
-        prompt_template = PROMPT_PATH.read_text()
+        prompt_template = _load_prompt(str(PROMPT_PATH))
 
         return prompt_template.format(
             query=query,

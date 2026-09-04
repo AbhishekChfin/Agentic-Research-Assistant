@@ -1,7 +1,11 @@
+from functools import lru_cache
 from pathlib import Path
 
 from app.core.schemas import EvidenceItem, FinalResponse, ResearchPlan
 from app.models.answer_llm import get_answer_llm
+
+def _load_prompt(path: str) -> str:
+    return Path(path).read_text(encoding="utf-8")
 
 
 PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "summarizer.md"
@@ -28,7 +32,7 @@ class SummariserAgent:
     
     @staticmethod
     def _build_prompt(plan: ResearchPlan, findings: list[EvidenceItem]) -> str:
-        prompt_template = PROMPT_PATH.read_text()
+        prompt_template = _load_prompt(str(PROMPT_PATH))
 
         return prompt_template.format(
             query=plan.query,

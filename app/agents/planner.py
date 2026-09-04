@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pathlib import Path
 
 from app.core.schemas import ResearchPlan
@@ -7,10 +8,15 @@ from app.models.planner_llm import get_planner_llm
 PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "planner.md"
 
 
+@lru_cache(maxsize=128)
+def _load_prompt(path: str) -> str:
+    return Path(path).read_text(encoding="utf-8")
+
+
 class PlannerAgent:
     def __init__(self):
-        self.llm = get_planner_llm() 
-        self.prompt_template = PROMPT_PATH.read_text()
+        self.llm = get_planner_llm()
+        self.prompt_template = _load_prompt(str(PROMPT_PATH))
 
     def create_plan(self, query: str) -> ResearchPlan:
         prompt = self.prompt_template.format(query=query)

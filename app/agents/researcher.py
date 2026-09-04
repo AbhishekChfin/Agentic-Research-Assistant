@@ -5,7 +5,7 @@ from app.tools.web_search import web_search
 
 class ResearcherAgent:
     def __init__(self, rag_search: RAGSearch | None = None):
-        self.rag_search = RAGSearch()
+        self.rag_search = rag_search or RAGSearch()
 
     def run(self, plan: ResearchPlan) -> list[EvidenceItem]:
         findings: list[EvidenceItem] = []
