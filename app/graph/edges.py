@@ -27,15 +27,30 @@ def decide_next_step(state: dict) -> str:
 
     return "end"
 
+def plan_validation(state: dict) -> str:
+    if state.get("plan_valid"):
+        return "researcher"
+
+    return "planner"
+
 
 def add_workflow_edges(graph: StateGraph) -> StateGraph:
-    """
-    Connecting nodes using edges forming complete sequential workflow 
-    """
     graph.add_edge(START, "planner")
-    graph.add_edge("planner", "researcher")
+
+    graph.add_edge("planner", "validate_plan")
+
+    graph.add_conditional_edges(
+        "validate_plan",
+        plan_validation,
+        {
+            "researcher": "researcher",
+            "planner": "planner",
+        },
+    )
+
     graph.add_edge("researcher", "summarizer")
     graph.add_edge("summarizer", "judge")
+
     graph.add_conditional_edges(
         "judge",
         decide_next_step,

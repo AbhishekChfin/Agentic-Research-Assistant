@@ -18,8 +18,12 @@ class PlannerAgent:
         self.llm = get_planner_llm()
         self.prompt_template = _load_prompt(str(PROMPT_PATH))
 
-    def create_plan(self, query: str) -> ResearchPlan:
-        prompt = self.prompt_template.format(query=query)
+    def create_plan(self, query: str, validation_feedback: list[str]) -> ResearchPlan:
+        feedback = "\n".join(validation_feedback or ["No previous validation errors."])
+
+        prompt = self.prompt_template.format(
+            query=query,
+            validation_feedback=feedback)
         structured_llm = self.llm.with_structured_output(ResearchPlan) # structured_llm will return ResearchPlan schema so we can ignore the plance error below 
         response = structured_llm.invoke(prompt)
 

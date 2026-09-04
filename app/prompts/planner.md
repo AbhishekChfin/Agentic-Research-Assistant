@@ -11,3 +11,8 @@ Your job:
 
 User query:
 {query}
+
+Previous plan validation feedback:
+{validation_feedback}
+
+If validation feedback is present, create a corrected plan that fixes every issue.

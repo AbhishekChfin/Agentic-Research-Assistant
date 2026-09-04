@@ -8,6 +8,8 @@ class ResearchState(TypedDict, total=False):
     normalized_query: str
     prior_memories: list[dict[str, Any]]
     plan: dict[str, Any]
+    plan_valid: bool
+    plan_validation_errors: list[str]
     subtasks: list[dict[str, Any]]
     completed_subtasks: list[dict[str, Any]]
     evidence: list[dict[str, Any]]

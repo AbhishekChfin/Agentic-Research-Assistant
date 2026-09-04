@@ -3,12 +3,32 @@ from app.core.schemas import EvidenceItem, EvaluationResult, ResearchPlan
 from app.graph.state import ResearchState
 
 
+def validate_plan_node(state: ResearchState) -> ResearchState:
+    plan = ResearchPlan.model_validate(state["plan"]) # type: ignore
+
+    errors = []
+
+    if not plan.subtasks:
+        errors.append("Plan has no subtasks.")
+
+    if len(plan.subtasks) > 4:
+        errors.append("Plan exceeds the maximum subtask budget.")
+
+    ids = [subtask.id for subtask in plan.subtasks]
+    if len(ids) != len(set(ids)):
+        errors.append("Subtask IDs must be unique.")
+
+    return {
+        "plan_valid": not errors,
+        "plan_validation_errors": errors,
+    }
 
 def planner_node(state: ResearchState, planner: PlannerAgent) -> ResearchState:
     """
     Using planner agent to create plan
     """
-    plan = planner.create_plan(state["query"]) # type: ignore
+    feedback = state.get("plan_validation_errors", [])
+    plan = planner.create_plan(state["query"], validation_feedback = feedback) # type: ignore
 
     return {
         "plan": plan.model_dump(),
