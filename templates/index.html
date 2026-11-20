@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Agent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Research Agent</h1>
+        <p class="subtitle">Multi-agent research assistant powered by LLMs</p>
+
+        <form id="research-form">
+            <label for="topic">Research Topic</label>
+            <input
+                type="text"
+                id="topic"
+                name="topic"
+                placeholder="e.g., Explain cross-validation in machine learning"
+                required
+            >
+            <button type="submit" id="submit-btn">Generate Report</button>
+        </form>
+
+        <div id="status-box" class="hidden">
+            <h3>Status: <span id="status-text">—</span></h3>
+            <div id="progress-log"></div>
+        </div>
+
+        <div id="result-box" class="hidden">
+            <h2>Research Report</h2>
+            <div id="result-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("research-form");
+        const statusBox = document.getElementById("status-box");
+        const statusText = document.getElementById("status-text");
+        const progressLog = document.getElementById("progress-log");
+        const resultBox = document.getElementById("result-box");
+        const resultContent = document.getElementById("result-content");
+        const submitBtn = document.getElementById("submit-btn");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const topic = document.getElementById("topic").value;
+            if (!topic) return;
+
+            // Reset UI
+            statusBox.classList.remove("hidden");
+            resultBox.classList.add("hidden");
+            progressLog.innerHTML = "";
+            resultContent.innerHTML = "";
+            statusText.textContent = "Starting…";
+            submitBtn.disabled = true;
+
+            // Start task
+            const formData = new FormData();
+            formData.append("topic", topic);
+
+            const res = await fetch("/generate_report", { method: "POST", body: formData });
+            const data = await res.json();
+            const taskId = data.task_id;
+
+            // Poll for progress
+            const poll = setInterval(async () => {
+                const prog = await fetch(`/task_progress/${taskId}`);
+                const info = await prog.json();
+
+                statusText.textContent = info.status;
+                progressLog.innerHTML = info.progress
+                    .map(p => `<div class="log-line">▸ ${p}</div>`)
+                    .join("");
+
+                if (info.status === "completed" || info.status === "completed_with_caveats" || info.status === "failed") {
+                    clearInterval(poll);
+                    submitBtn.disabled = false;
+
+                    if (info.result && info.result.response) {
+                        resultBox.classList.remove("hidden");
+                        resultContent.innerHTML = `<pre>${info.result.response}</pre>`;
+                    }
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

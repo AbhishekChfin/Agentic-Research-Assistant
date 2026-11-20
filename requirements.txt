@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+jinja2
+python-dotenv
+requests
+pydantic
+langchain-google-genai
+sentence-transformers
+faiss-cpu
+numpy
+pdfplumber
