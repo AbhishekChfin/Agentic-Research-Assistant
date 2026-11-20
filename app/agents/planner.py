@@ -24,7 +24,7 @@ class PlannerAgent:
         prompt = self.prompt_template.format(
             query=query,
             validation_feedback=feedback)
-        structured_llm = self.llm.with_structured_output(ResearchPlan) # structured_llm will return ResearchPlan schema so we can ignore the plance error below 
+        structured_llm = self.llm.with_structured_output(ResearchPlan) # structured_llm will return ResearchPlan schema so we can ignore the pylance error below 
         response = structured_llm.invoke(prompt)
 
         if not isinstance(response, ResearchPlan):
