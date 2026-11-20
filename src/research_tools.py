@@ -12,8 +12,10 @@ import re
 from pathlib import Path
 from typing import Any
 
+import arxiv
 import numpy as np
 import requests
+import wikipedia
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
@@ -155,4 +157,69 @@ def rag_search(query: str, top_k: int = 10) -> list[Evidence]:
                 confidence=float(score),
             )
         )
+    return results
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  ARXIV SEARCH
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def arxiv_search(query: str, max_results: int = 3) -> list[Evidence]:
+    """Search arXiv for academic papers and return Evidence objects."""
+    client = arxiv.Client()
+    search = arxiv.Search(
+        query=query,
+        max_results=max_results,
+        sort_by=arxiv.SortCriterion.Relevance,
+    )
+
+    results = []
+    for paper in client.results(search):
+        # Use title + truncated abstract as the claim
+        abstract = paper.summary.replace("\n", " ").strip()
+        if len(abstract) > 500:
+            abstract = abstract[:497] + "..."
+
+        results.append(
+            Evidence(
+                claim=f"{paper.title}. {abstract}",
+                source_title=paper.title,
+                source_url=paper.entry_id,
+                confidence=0.85,
+            )
+        )
+    return results
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  WIKIPEDIA SEARCH
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def wikipedia_search(query: str, max_results: int = 3) -> list[Evidence]:
+    """Search Wikipedia for background knowledge and return Evidence objects."""
+    results = []
+
+    try:
+        page_titles = wikipedia.search(query, results=max_results)
+    except Exception:
+        return results
+
+    for title in page_titles:
+        try:
+            page = wikipedia.page(title, auto_suggest=False)
+            summary = page.summary
+            if len(summary) > 500:
+                summary = summary[:497] + "..."
+
+            results.append(
+                Evidence(
+                    claim=summary,
+                    source_title=page.title,
+                    source_url=page.url,
+                    confidence=0.75,
+                )
+            )
+        except (wikipedia.DisambiguationError, wikipedia.PageError):
+            continue
+
     return results

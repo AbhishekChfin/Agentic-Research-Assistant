@@ -1,6 +1,6 @@
 # Research Agent
 
-A multi-agent research assistant that plans, researches, synthesizes, and evaluates answers using LLMs — inspired by [DeepLearning.AI's Agentic AI course](https://github.com/https-deeplearning-ai/agentic-ai-public).
+A multi-agent research assistant that plans, researches, synthesizes, and evaluates answers using LLMs.
 
 ## Architecture
 
